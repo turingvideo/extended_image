@@ -1329,4 +1329,13 @@ class _ExtendedImageState extends State<ExtendedImage>
       _imageStream!.addListener(_getListener());
     }
   }
+
+  @override
+  void onScaleEnd(ScaleEndDetails details) {}
+
+  @override
+  void onScaleStart(ScaleStartDetails details) {}
+
+  @override
+  void onScaleUpdate(ScaleUpdateDetails details) {}
 }

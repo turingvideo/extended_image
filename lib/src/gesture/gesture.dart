@@ -1,5 +1,4 @@
 import 'package:extended_image/src/gesture/utils.dart';
-
 import 'package:extended_image/src/image/raw_image.dart';
 import 'package:extended_image/src/utils.dart';
 import 'package:flutter/gestures.dart';
@@ -32,6 +31,7 @@ class ExtendedImageGesture extends StatefulWidget {
   final ExtendedImageState extendedImageState;
   final ImageBuilderForGesture? imageBuilder;
   final CanScaleImage canScaleImage;
+
   @override
   ExtendedImageGestureState createState() => ExtendedImageGestureState();
 }
@@ -180,6 +180,29 @@ class ExtendedImageGestureState extends State<ExtendedImageGesture>
   void initState() {
     super.initState();
     _initGestureConfig();
+    widget.extendedImageState.transformController
+        ?.addListener(onTransformationControllerUpdate);
+  }
+
+  void onTransformationControllerUpdate() {
+    if (mounted) {
+      final double scale = widget.extendedImageState.transformController!.value
+          .getMaxScaleOnAxis();
+      final int screenWidth = MediaQuery.of(context).size.width.floor();
+
+      final Offset left = MatrixUtils.transformPoint(
+          widget.extendedImageState.transformController!.value,
+          const Offset(0, 0));
+      final Offset right = MatrixUtils.transformPoint(
+          widget.extendedImageState.transformController!.value,
+          Offset(screenWidth.toDouble(), 0));
+      final bool leftBoundary = (left.dx - 0).abs() < 1;
+      final bool rightBoundary = (right.dx.floor() - screenWidth).abs() < 2;
+      setState(() {
+        _gestureDetails!.computeInteractiveHorizontalBoundary =
+            scale <= 0 || (!leftBoundary && !rightBoundary);
+      });
+    }
   }
 
   void reset() {
@@ -303,6 +326,10 @@ class ExtendedImageGestureState extends State<ExtendedImageGesture>
             _gestureDetails!.offset, _gestureDetails!.offset! + direction);
       }
     }
+
+    if (widget.extendedImageState.transformController != null) {
+      widget.extendedImageState.onScaleEnd(details);
+    }
   }
 
   void handleScaleStart(ScaleStartDetails details) {
@@ -311,6 +338,10 @@ class ExtendedImageGestureState extends State<ExtendedImageGesture>
         _gestureDetails!.totalScale!;
     _startingScale = _gestureDetails!.totalScale;
     _startingOffset = details.focalPoint;
+
+    if (widget.extendedImageState.transformController != null) {
+      widget.extendedImageState.onScaleStart(details);
+    }
   }
 
   void handleScaleUpdate(ScaleUpdateDetails details) {
@@ -361,6 +392,10 @@ class ExtendedImageGestureState extends State<ExtendedImageGesture>
     if (extendedImageSlidePageState != null &&
         extendedImageSlidePageState!.isSliding) {
       return;
+    }
+
+    if (widget.extendedImageState.transformController != null) {
+      widget.extendedImageState.onScaleUpdate(details);
     }
 
     // totalScale > 1 and page view is starting to move

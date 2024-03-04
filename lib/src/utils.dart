@@ -41,6 +41,12 @@ mixin ExtendedImageState {
 
   Object? get lastException;
   StackTrace? get lastStack;
+
+  void onScaleStart(ScaleStartDetails details);
+  void onScaleUpdate(ScaleUpdateDetails details);
+  void onScaleEnd(ScaleEndDetails details);
+
+  TransformationController? transformController;
 }
 
 enum ExtendedImageMode {

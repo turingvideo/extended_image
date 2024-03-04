@@ -1,6 +1,8 @@
 import 'dart:math';
+
 import 'package:extended_image/src/typedef.dart';
 import 'package:flutter/material.dart';
+
 import '../utils.dart';
 import 'slide_page.dart';
 
@@ -66,6 +68,8 @@ class GestureDetails {
     if (gestureDetails != null) {
       _computeVerticalBoundary = gestureDetails._computeVerticalBoundary;
       _computeHorizontalBoundary = gestureDetails._computeHorizontalBoundary;
+      computeInteractiveHorizontalBoundary =
+          gestureDetails.computeInteractiveHorizontalBoundary;
       _center = gestureDetails._center;
       layoutRect = gestureDetails.layoutRect;
       destinationRect = gestureDetails.destinationRect;
@@ -91,6 +95,8 @@ class GestureDetails {
 
   bool _computeHorizontalBoundary = false;
   bool get computeHorizontalBoundary => _computeHorizontalBoundary;
+
+  bool computeInteractiveHorizontalBoundary = false;
 
   Boundary _boundary = Boundary();
   Boundary get boundary => _boundary;
@@ -317,7 +323,8 @@ class GestureDetails {
             delta.dx.abs() > delta.dy.abs() &&
             ((delta.dx < 0 && boundary.right) ||
                 (delta.dx > 0 && boundary.left) ||
-                !_computeHorizontalBoundary);
+                (!_computeHorizontalBoundary &&
+                    !computeInteractiveHorizontalBoundary));
 
       case Axis.vertical:
         return delta.dy != 0 &&

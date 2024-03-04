@@ -28,6 +28,7 @@ class _SimplePhotoViewDemoState extends State<SimplePhotoViewDemo> {
     'https://photo.tuchong.com/5040418/f/43305517.jpg',
     'https://photo.tuchong.com/3019649/f/302699092.jpg'
   ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -85,8 +86,10 @@ class _SimplePhotoViewDemoState extends State<SimplePhotoViewDemo> {
 )
 class SimplePicsWiper extends StatefulWidget {
   const SimplePicsWiper({required this.url, required this.images});
+
   final String url;
   final List<String> images;
+
   @override
   _SimplePicsWiperState createState() => _SimplePicsWiperState();
 }
@@ -143,10 +146,13 @@ class _SimplePicsWiperState extends State<SimplePicsWiper> {
               return url == 'This is an video'
                   ? ExtendedImageSlidePageHandler(
                       child: Material(
-                        child: Container(
-                          alignment: Alignment.center,
-                          color: Colors.yellow,
-                          child: const Text('This is an video'),
+                        child: ExtendedInteractiveViewer(
+                          extended: true,
+                          child: Container(
+                            alignment: Alignment.center,
+                            color: Colors.yellow,
+                            child: const Text('This is an video'),
+                          ),
                         ),
                       ),
 
