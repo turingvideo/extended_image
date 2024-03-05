@@ -68,8 +68,10 @@ class GestureDetails {
     if (gestureDetails != null) {
       _computeVerticalBoundary = gestureDetails._computeVerticalBoundary;
       _computeHorizontalBoundary = gestureDetails._computeHorizontalBoundary;
-      computeInteractiveHorizontalBoundary =
-          gestureDetails.computeInteractiveHorizontalBoundary;
+      computeInteractiveHorizontalLeftBoundary =
+          gestureDetails.computeInteractiveHorizontalLeftBoundary;
+      computeInteractiveHorizontalRightBoundary =
+          gestureDetails.computeInteractiveHorizontalRightBoundary;
       _center = gestureDetails._center;
       layoutRect = gestureDetails.layoutRect;
       destinationRect = gestureDetails.destinationRect;
@@ -96,7 +98,8 @@ class GestureDetails {
   bool _computeHorizontalBoundary = false;
   bool get computeHorizontalBoundary => _computeHorizontalBoundary;
 
-  bool computeInteractiveHorizontalBoundary = false;
+  bool computeInteractiveHorizontalLeftBoundary = false;
+  bool computeInteractiveHorizontalRightBoundary = false;
 
   Boundary _boundary = Boundary();
   Boundary get boundary => _boundary;
@@ -324,7 +327,10 @@ class GestureDetails {
             ((delta.dx < 0 && boundary.right) ||
                 (delta.dx > 0 && boundary.left) ||
                 (!_computeHorizontalBoundary &&
-                    !computeInteractiveHorizontalBoundary));
+                    ((delta.dx > 0 &&
+                            !computeInteractiveHorizontalLeftBoundary) ||
+                        (delta.dx < 0 &&
+                            !computeInteractiveHorizontalRightBoundary))));
 
       case Axis.vertical:
         return delta.dy != 0 &&

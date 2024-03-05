@@ -47,6 +47,7 @@ class ExtendedImageGestureState extends State<ExtendedImageGesture>
   late GestureAnimation _gestureAnimation;
   GestureConfig? _gestureConfig;
   ExtendedImageGesturePageViewState? _pageViewState;
+
   ExtendedImageSlidePageState? get extendedImageSlidePageState =>
       widget.extendedImageState.slidePageState;
 
@@ -199,8 +200,10 @@ class ExtendedImageGestureState extends State<ExtendedImageGesture>
       final bool leftBoundary = (left.dx - 0).abs() < 1;
       final bool rightBoundary = (right.dx.floor() - screenWidth).abs() < 2;
       setState(() {
-        _gestureDetails!.computeInteractiveHorizontalBoundary =
-            scale <= 0 || (!leftBoundary && !rightBoundary);
+        _gestureDetails!.computeInteractiveHorizontalLeftBoundary =
+            scale <= 0 || !leftBoundary;
+        _gestureDetails!.computeInteractiveHorizontalRightBoundary =
+            scale <= 0 || !rightBoundary;
       });
     }
   }
