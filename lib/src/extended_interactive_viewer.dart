@@ -1270,10 +1270,12 @@ class _ExtendedInteractiveViewerState extends State<ExtendedInteractiveViewer>
       );
     }
 
-    final ExtendedImageGesture newChild = ExtendedImageGesture(
-      this,
-      imageBuilder: (_) => child,
-    );
+    final ExtendedImageGesture newChild = ExtendedImageGesture(this,
+        imageBuilder: (
+          Widget image, {
+          ExtendedImageGestureState? imageGestureState,
+        }) =>
+            child);
 
     return Listener(
       key: _parentKey,

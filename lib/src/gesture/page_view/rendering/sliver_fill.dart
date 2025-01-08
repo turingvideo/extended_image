@@ -66,6 +66,52 @@ class ExtendedRenderSliverFillViewport
   }
 
   @override
+  double indexToLayoutOffset(double itemExtent, int index) =>
+      itemExtent * index;
+
+  @override
+  int getMinChildIndexForScrollOffset(
+    double scrollOffset,
+    double itemExtent,
+  ) {
+    if (itemExtent > 0.0) {
+      final double actual = scrollOffset / itemExtent;
+      final int round = actual.round();
+      if ((actual * itemExtent - round * itemExtent).abs() <
+          precisionErrorTolerance) {
+        return round;
+      }
+      return actual.floor();
+    }
+    return 0;
+  }
+
+  @override
+  int getMaxChildIndexForScrollOffset(
+    double scrollOffset,
+    double itemExtent,
+  ) {
+    if (itemExtent > 0.0) {
+      final double actual = scrollOffset / itemExtent - 1;
+      final int round = actual.round();
+      if ((actual * itemExtent - round * itemExtent).abs() <
+          precisionErrorTolerance) {
+        return math.max(0, round);
+      }
+      return math.max(0, actual.ceil());
+    }
+    return 0;
+  }
+
+  @override
+  double computeMaxScrollOffset(
+    SliverConstraints constraints,
+    double itemExtent,
+  ) {
+    return childManager.childCount * itemExtent;
+  }
+
+  @override
   void performLayout() {
     final SliverConstraints constraints = this.constraints;
     childManager.didStartLayout();
@@ -232,8 +278,9 @@ class ExtendedRenderSliverFillViewport
 
     // We may have started the layout while scrolled to the end, which would not
     // expose a new child.
-    if (estimatedMaxScrollOffset == trailingScrollOffset)
+    if (estimatedMaxScrollOffset == trailingScrollOffset) {
       childManager.setDidUnderflow(true);
+    }
     childManager.didFinishLayout();
   }
 
